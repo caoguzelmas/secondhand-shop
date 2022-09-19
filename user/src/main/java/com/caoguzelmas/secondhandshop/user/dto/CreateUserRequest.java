@@ -7,6 +7,13 @@ public class CreateUserRequest {
     private String middleName;
     private String lastName;
 
+    public CreateUserRequest(String email, String firstName, String middleName, String lastName) {
+        this.email = email;
+        this.firstName = firstName;
+        this.middleName = middleName;
+        this.lastName = lastName;
+    }
+
     public String getEmail() {
         return email;
     }
