@@ -8,8 +8,7 @@ import org.springframework.context.annotation.ComponentScan;
 @ComponentScan(basePackages = {"com.caoguzelmas.secondhandshop.user"})
 public class SecondhandShopApplication {
 
-	public static void main(String[] args) {
+    public static void main(String[] args) {
 		SpringApplication.run(SecondhandShopApplication.class, args);
 	}
-
 }

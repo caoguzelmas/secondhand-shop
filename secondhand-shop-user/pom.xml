@@ -10,7 +10,7 @@
     <modelVersion>4.0.0</modelVersion>
 
     <groupId>com.caoguzelmas.secondhand-shop</groupId>
-    <artifactId>user</artifactId>
+    <artifactId>secondhand-shop-user</artifactId>
 
     <dependencies>
         <dependency>

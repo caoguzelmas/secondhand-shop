@@ -6,7 +6,7 @@ public class UpdateUserRequest {
     private String middleName;
     private String lastName;
 
-""    public UpdateUserRequest(String email, String firstName, String middleName, String lastName) {
+    public UpdateUserRequest(String email, String firstName, String middleName, String lastName) {
         this.email = email;
         this.firstName = firstName;
         this.middleName = middleName;

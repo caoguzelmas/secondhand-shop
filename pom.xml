@@ -4,7 +4,8 @@
 	<modelVersion>4.0.0</modelVersion>
 	<packaging>pom</packaging>
 	<modules>
-		<module>user</module>
+		<module>secondhand-shop-user</module>
+		<module>secondhand-shop-app</module>
 	</modules>
 	<parent>
 		<groupId>org.springframework.boot</groupId>
@@ -45,24 +46,9 @@
 			<scope>test</scope>
 		</dependency>
 		<dependency>
-			<artifactId>user</artifactId>
-			<groupId>com.caoguzelmas.secondhand-shop</groupId>
-			<version>0.0.1-SNAPSHOT</version>
-		</dependency>
-		<dependency>
 			<groupId>org.springframework.security</groupId>
 			<artifactId>spring-security-test</artifactId>
 			<scope>test</scope>
 		</dependency>
 	</dependencies>
-
-	<build>
-		<plugins>
-			<plugin>
-				<groupId>org.springframework.boot</groupId>
-				<artifactId>spring-boot-maven-plugin</artifactId>
-			</plugin>
-		</plugins>
-	</build>
-
 </project>
