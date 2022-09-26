@@ -4,6 +4,7 @@ import lombok.*;
 
 import javax.persistence.*;
 import java.util.List;
+import java.util.Objects;
 
 @Entity
 @Getter
@@ -23,21 +24,23 @@ public class User extends BaseEntity {
     private String middleName;
     private String lastName;
     @OneToMany(mappedBy = "user", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+    @Singular("sellingAddress")
     private List<Address> sellingAddress;
     @OneToMany(mappedBy = "user", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+    @Singular("buyingAddress")
     private List<Address> buyingAddress;
     private Boolean isActive;
 
-/*    @Override
+    @Override
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
-        User that = (User) o;
-        return Objects.equals(userId, that.userId) && Objects.equals(email, that.email) && Objects.equals(password, that.password) && Objects.equals(firstName, that.firstName) && Objects.equals(middleName, that.middleName) && Objects.equals(lastName, that.lastName) && Objects.equals(billingAddress, that.billingAddress) && Objects.equals(shippingAddress, that.shippingAddress) && Objects.equals(isActive, that.isActive);
+        User user = (User) o;
+        return Objects.equals(userId, user.userId) && Objects.equals(email, user.email) && Objects.equals(password, user.password) && Objects.equals(firstName, user.firstName) && Objects.equals(middleName, user.middleName) && Objects.equals(lastName, user.lastName) && Objects.equals(sellingAddress, user.sellingAddress) && Objects.equals(buyingAddress, user.buyingAddress) && Objects.equals(isActive, user.isActive);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(userId, email, password, firstName, middleName, lastName, billingAddress, shippingAddress, isActive);
-    }*/
+        return Objects.hash(userId, email, password, firstName, middleName, lastName, sellingAddress, buyingAddress, isActive);
+    }
 }

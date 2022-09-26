@@ -86,7 +86,7 @@ public class UserServiceImpl implements IUserService {
                 .orElseThrow(() -> new UserNotFoundException("User not found with given Email :" + email));
     }
 
-    protected User findUserById(final Long id) {
+    public User findUserById(final Long id) {
         return userRepository.findById(id)
                 .orElseThrow(() -> new UserNotFoundException("User not found with given Id :" + id));
     }
@@ -105,6 +105,7 @@ public class UserServiceImpl implements IUserService {
         User updatedUser = User.builder()
                 .userId(user.getUserId())
                 .email(user.getEmail())
+                .password(user.getPassword())
                 .firstName(user.getFirstName())
                 .middleName(user.getFirstName())
                 .lastName(user.getLastName())

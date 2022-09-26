@@ -1,10 +1,10 @@
 package com.caoguzelmas.secondhandshop.user.service;
 
-import com.caoguzelmas.secondhandshop.user.TestSupport;
 import com.caoguzelmas.secondhandshop.user.dto.CreateUserRequest;
 import com.caoguzelmas.secondhandshop.user.dto.UpdateUserRequest;
-import com.caoguzelmas.secondhandshop.user.dto.UserDto;
 import com.caoguzelmas.secondhandshop.user.exception.UserActivityException;
+import com.caoguzelmas.secondhandshop.user.support.UserTestSupport;
+import com.caoguzelmas.secondhandshop.user.dto.UserDto;
 import com.caoguzelmas.secondhandshop.user.exception.UserNotFoundException;
 import com.caoguzelmas.secondhandshop.user.mapper.UserMapper;
 import com.caoguzelmas.secondhandshop.user.model.User;
@@ -16,11 +16,10 @@ import org.junit.jupiter.api.Test;
 import java.util.List;
 import java.util.Optional;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
 
-class UserServiceImplTest extends TestSupport {
+class UserServiceImplUserTest extends UserTestSupport {
     private UserMapper mapper;
     private UserRepository userRepository;
     private UserServiceImpl userService;
@@ -72,50 +71,45 @@ class UserServiceImplTest extends TestSupport {
         verifyNoInteractions(mapper);
     }
 
-    // TODO
-/*   @Test
+    @Test
     public void testCreateUser_shouldReturnCreatedUserDto() {
-        CreateUserRequest createUserRequest = generateCreateUserRequest();
-        User user = generateUser(false);
+        CreateUserRequest createUserRequest = generateCreateUserRequest(email,"password", "firstName", "middleName", "lastName");
         User savedUser = generateUser(false);
         UserDto userDto = generateUserDto();
 
-        when(userRepository.save(user)).thenReturn(savedUser);
+        when(userRepository.save(any())).thenReturn(savedUser);
         when(mapper.convert(savedUser)).thenReturn(userDto);
 
         UserDto result = userService.createUser(createUserRequest);
 
-
-        assertEquals(userDto.getEmail(), result.getEmail());
-        verify(userRepository).save(user);
+        assertEquals(userDto, result);
+        verify(userRepository).save(any());
         verify(mapper).convert(savedUser);
     }
 
+
     @Test
     public void testUpdateUser_whenUserMailExistAndUserIsActive_shouldReturnUpdatedUserDto() {
-        UpdateUserRequest updateUserRequest = new UpdateUserRequest(email, "firstName2", "middleName2", "lastName2");
-        User user = new UserInformation(1L, email,"firstName", "middleName", "lastName", true);
-        User updateUser = new UserInformation(1L, email,"firstName2", "middleName2", "lastName2", true);
-        User savedUser = new UserInformation(1L, email,"firstName2", "middleName2", "lastName2", true);
-        UserDto userDto = new UserDto(email,"firstName2", "middleName2", "lastName2");
-
+        UpdateUserRequest updateUserRequest = generateUpdateUserRequest(email,"password2", "firstName2", "middleName2", "lastName2");
+        User user = generateUser(userId, email, "password2","firstName2", "middleName2", "lastName2", true);
+        UserDto userDto = generateUserDto(email,"password2","firstName2", "middleName2", "lastName2");
 
         when(userRepository.findByEmail(email)).thenReturn(Optional.of(user));
-        when(userRepository.save(updateUser)).thenReturn(savedUser);
-        when(mapper.convert(savedUser)).thenReturn(userDto);
+        when(userRepository.save(any())).thenReturn(user);
+        when(mapper.convert(user)).thenReturn(userDto);
 
         UserDto result = userService.updateUser(email, updateUserRequest);
 
         assertEquals(userDto, result);
 
         verify(userRepository).findByEmail(email);
-        verify(userRepository).save(updateUser);
-        verify(mapper).convert(savedUser);
+        verify(userRepository).save(any());
+        verify(mapper).convert(user);
     }
 
     @Test
     public void testUpdateUser_whenUserMailDoesNotExist_shouldThrowUserNotFoundException() {
-        UpdateUserRequest updateUserRequest = new UpdateUserRequest(email, "firstName2", "middleName2", "lastName2");
+        UpdateUserRequest updateUserRequest = generateUpdateUserRequest(email,"password2", "firstName2", "middleName2", "lastName2");
 
         when(userRepository.findByEmail(email)).thenReturn(Optional.empty());
 
@@ -128,8 +122,8 @@ class UserServiceImplTest extends TestSupport {
 
     @Test
     public void testUpdateUser_whenUserMailExistButUserIsNotActive_shouldThrowUserActivityException() {
-        UpdateUserRequest updateUserRequest = new UpdateUserRequest(email, "firstName2", "middleName2", "lastName2");
-        User user = new UserInformation(1L, email,"firstName", "middleName", "lastName", false);
+        UpdateUserRequest updateUserRequest = generateUpdateUserRequest(email,"password2", "firstName2", "middleName2", "lastName2");
+        User user = generateUser(false);
 
         when(userRepository.findByEmail(email)).thenReturn(Optional.of(user));
 
@@ -142,15 +136,14 @@ class UserServiceImplTest extends TestSupport {
 
     @Test
     public void testDeactivateUser_whenUserIdExist_shouldUpdateUserByActiveFalse() {
-        User user = new UserInformation(userId, email,"firstName", "middleName", "lastName", true);
-        User savedUser = new UserInformation(userId, email,"firstName", "middleName", "lastName", false);
+        User user = generateUser(true);
 
         when(userRepository.findById(userId)).thenReturn(Optional.of(user));
 
         userService.deactivateUser(userId);
 
         verify(userRepository).findById(userId);
-        verify(userRepository).save(savedUser);
+        verify(userRepository).save(any());
     }
 
     @Test
@@ -165,15 +158,14 @@ class UserServiceImplTest extends TestSupport {
 
     @Test
     public void testActivateUser_whenUserIdExist_shouldUpdateUserByActiveTrue() {
-        User user = new UserInformation(userId, email,"firstName", "middleName", "lastName", false);
-        User savedUser = new UserInformation(userId, email,"firstName", "middleName", "lastName", true);
+        User user = generateUser(false);
 
         when(userRepository.findById(userId)).thenReturn(Optional.of(user));
 
         userService.activateUser(userId);
 
         verify(userRepository).findById(userId);
-        verify(userRepository).save(savedUser);
+        verify(userRepository).save(any());
     }
 
     @Test
@@ -187,8 +179,24 @@ class UserServiceImplTest extends TestSupport {
     }
 
     @Test
+    public void testActivateUser_whenUserAlreadyActive_shouldThrowUserActivityException() {
+        User activeUser = generateUser(true);
+        when(userRepository.findById(userId)).thenReturn(Optional.of(activeUser));
+
+        assertThrows(UserActivityException.class, () -> userService.activateUser(userId));
+    }
+
+    @Test
+    public void testDeActivateUser_whenUserAlreadyDeActive_shouldThrowUserActivityException() {
+        User activeUser = generateUser(false);
+        when(userRepository.findById(userId)).thenReturn(Optional.of(activeUser));
+
+        assertThrows(UserActivityException.class, () -> userService.deactivateUser(userId));
+    }
+
+    @Test
     public void testDeleteUser_whenUserIdExist_shouldDeleteUser() {
-        User user = new UserInformation(userId, email,"firstName", "middleName", "lastName", false);
+        User user = generateUser(false);
 
         when(userRepository.findById(userId)).thenReturn(Optional.of(user));
 
@@ -206,5 +214,5 @@ class UserServiceImplTest extends TestSupport {
 
         verify(userRepository).findById(userId);
         verifyNoMoreInteractions(userRepository);
-    }*/
+    }
 }
