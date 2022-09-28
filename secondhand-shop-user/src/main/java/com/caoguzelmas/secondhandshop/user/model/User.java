@@ -24,10 +24,8 @@ public class User extends BaseEntity {
     private String middleName;
     private String lastName;
     @OneToMany(mappedBy = "user", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
-    @Singular("sellingAddress")
     private List<Address> sellingAddress;
     @OneToMany(mappedBy = "user", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
-    @Singular("buyingAddress")
     private List<Address> buyingAddress;
     private Boolean isActive;
 

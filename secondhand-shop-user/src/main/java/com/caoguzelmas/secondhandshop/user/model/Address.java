@@ -25,7 +25,7 @@ public class Address {
     private String postalCode;
     private String country;
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name ="id", nullable = false)
+    @JoinColumn(name ="userId", nullable = false)
     private User user;
 
     @Override
