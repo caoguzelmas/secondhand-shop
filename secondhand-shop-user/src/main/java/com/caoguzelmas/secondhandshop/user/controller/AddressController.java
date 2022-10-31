@@ -19,20 +19,9 @@ public class AddressController {
         this.addressService = addressService;
     }
 
-    @GetMapping("/{id}")
+   @GetMapping("/{id}")
     public ResponseEntity<List<AddressDto>> getAllAddressesByUserId(@PathVariable Long id) {
         return ResponseEntity.ok(addressService.getAllAddressesByUserId(id));
-    }
-
-    @GetMapping("/{id}/buying")
-    public ResponseEntity<List<AddressDto>> getAllBuyingAddressesByUserId(@PathVariable Long id) {
-        return ResponseEntity.ok(addressService.getAllAddressesByUserIdAndAddressType(id, AddressType.BUYING));
-    }
-
-
-    @GetMapping("/{id}/selling")
-    public ResponseEntity<List<AddressDto>> getAllSellingAddressesByUserId(@PathVariable Long id) {
-        return ResponseEntity.ok(addressService.getAllAddressesByUserIdAndAddressType(id,AddressType.SELLING));
     }
 
     @PostMapping("/{id}")

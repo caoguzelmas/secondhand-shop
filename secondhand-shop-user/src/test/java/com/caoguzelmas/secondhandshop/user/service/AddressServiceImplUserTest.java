@@ -71,43 +71,11 @@ public class AddressServiceImplUserTest extends AddressUserTestSupport {
     }
 
     @Test
-    public void testGetAllAddressesByUserIdAndAddressType_shouldReturnAddressDtoListOfSellingAddresses() {
-        testGetAllAddressesByUserIdAndAddressType(AddressType.SELLING);
-    }
-
-    @Test
-    public void testGetAllAddressesByUserIdAndAddressType_shouldReturnAddressDtoListOfBuyingAddresses() {
-        testGetAllAddressesByUserIdAndAddressType(AddressType.BUYING);
-    }
-
-    @Test
-    public void testGetAllAddressesByUserIdAndAddressType_whenUserDoesNotExist_shouldThrowUserNotFoundException() {
-        User user = generateUser(true);
-        when(addressRepository.findAllByUserAndAddressType(user, AddressType.SELLING)).thenReturn(Optional.empty());
-
-        assertThrows(UserNotFoundException.class, () -> addressService.getAllAddressesByUserIdAndAddressType(userId, AddressType.SELLING));
-        verify(userRepository).findById(userId);
-        verifyNoInteractions(addressRepository);
-        verifyNoInteractions(addressMapper);
-    }
-
-    @Test
-    public void testGetAllAddressesByUserIdAndAddressType_whenAddressDoesNotExist_shouldThrowAddressNotFoundException()  {
-        User user = generateUser(true);
-        when(userRepository.findById(userId)).thenReturn(Optional.of(user));
-
-        assertThrows(AddressNotFoundException.class, () -> addressService.getAllAddressesByUserIdAndAddressType(userId, AddressType.SELLING));
-        verify(userRepository).findById(userId);
-        verify(addressRepository).findAllByUserAndAddressType(user, AddressType.SELLING);
-        verifyNoInteractions(addressMapper);
-    }
-
-    @Test
     public void testInsertAddress_shouldReturnAddressDto() {
         User user = generateUser(true);
-        InsertAddressRequest insertAddressRequest = generateInsertAddressRequestWithAddressType(AddressType.BUYING);
-        Address insertedAddress = generateAddress(AddressType.BUYING, user);
-        AddressDto addressDto = generateAddressDto(AddressType.BUYING);
+        InsertAddressRequest insertAddressRequest = generateInsertAddressRequestWithAddressType(AddressType.HOME);
+        Address insertedAddress = generateAddress(AddressType.HOME, user);
+        AddressDto addressDto = generateAddressDto(AddressType.HOME);
 
         when(addressRepository.save(any())).thenReturn(insertedAddress);
         when(userRepository.findById(userId)).thenReturn(Optional.of(user));
@@ -123,7 +91,7 @@ public class AddressServiceImplUserTest extends AddressUserTestSupport {
     @Test
     public void testInsertAddress_whenUserDoesNotExist_shouldThrowUserNotFoundException() {
         when(userRepository.findById(userId)).thenReturn(Optional.empty());
-        InsertAddressRequest insertAddressRequest = generateInsertAddressRequestWithAddressType(AddressType.BUYING);
+        InsertAddressRequest insertAddressRequest = generateInsertAddressRequestWithAddressType(AddressType.HOME);
 
         assertThrows(UserNotFoundException.class, () -> addressService.insertAddress(userId, insertAddressRequest));
         verifyNoInteractions(addressRepository);
@@ -133,7 +101,7 @@ public class AddressServiceImplUserTest extends AddressUserTestSupport {
     @Test
     public void testInsertAddress_whenUserIsNotActive_shouldThrowUserActivityException() {
         User inActiveUser = generateUser(false);
-        InsertAddressRequest insertAddressRequest = generateInsertAddressRequestWithAddressType(AddressType.BUYING);
+        InsertAddressRequest insertAddressRequest = generateInsertAddressRequestWithAddressType(AddressType.HOME);
         when(userRepository.findById(userId)).thenReturn(Optional.of(inActiveUser));
 
         assertThrows(UserActivityException.class, () -> addressService.insertAddress(userId, insertAddressRequest));
@@ -144,10 +112,10 @@ public class AddressServiceImplUserTest extends AddressUserTestSupport {
     @Test
     public void testUpdateAddress_shouldReturnAddressDto() {
         User user = generateUser(true);
-        UpdateAddressRequest updateAddressRequest = generateUpdateAddressRequestWithAddressType(AddressType.BUYING);
-        Address addressBeforeUpdate = generateAddress(AddressType.BUYING, user);
-        Address updatedAddress = generateAddress(AddressType.SELLING, user);
-        AddressDto addressDto = generateAddressDto(AddressType.SELLING);
+        UpdateAddressRequest updateAddressRequest = generateUpdateAddressRequestWithAddressType(AddressType.HOME);
+        Address addressBeforeUpdate = generateAddress(AddressType.HOME, user);
+        Address updatedAddress = generateAddress(AddressType.BUSINESS, user);
+        AddressDto addressDto = generateAddressDto(AddressType.BUSINESS);
 
         when(addressRepository.findById(addressId)).thenReturn(Optional.of(addressBeforeUpdate));
         when(addressRepository.save(any())).thenReturn(updatedAddress);
@@ -164,7 +132,7 @@ public class AddressServiceImplUserTest extends AddressUserTestSupport {
     @Test
     public void testUpdateAddress_whenAddressDoesNotExist_shouldThrowAddressNotFoundException() {
         when(addressRepository.findById(addressId)).thenReturn(Optional.empty());
-        UpdateAddressRequest updateAddressRequest = generateUpdateAddressRequestWithAddressType(AddressType.BUYING);
+        UpdateAddressRequest updateAddressRequest = generateUpdateAddressRequestWithAddressType(AddressType.HOME);
 
         assertThrows(AddressNotFoundException.class, () -> addressService.updateAddress(addressId, updateAddressRequest));
         verifyNoInteractions(userRepository);
@@ -174,8 +142,8 @@ public class AddressServiceImplUserTest extends AddressUserTestSupport {
     @Test
     public void testUpdateAddress_whenUserIsNotActive_shouldThrowUserActivityException() {
         User user = generateUser(false);
-        Address address = generateAddress(AddressType.SELLING, user);
-            UpdateAddressRequest updateAddressRequest = generateUpdateAddressRequestWithAddressType(AddressType.SELLING);
+        Address address = generateAddress(AddressType.BUSINESS, user);
+            UpdateAddressRequest updateAddressRequest = generateUpdateAddressRequestWithAddressType(AddressType.BUSINESS);
 
         when(addressRepository.findById(addressId)).thenReturn(Optional.of(address));
         when(userRepository.findById(userId)).thenReturn(Optional.of(user));
@@ -187,7 +155,7 @@ public class AddressServiceImplUserTest extends AddressUserTestSupport {
     @Test
     public void testDeleteAddress_whenAddressIdExist_shouldDeleteAddress() {
         User user = generateUser(true);
-        Address address = generateAddress(AddressType.BUYING, user);
+        Address address = generateAddress(AddressType.HOME, user);
 
         when(addressRepository.findById(addressId)).thenReturn(Optional.of(address));
 
@@ -200,28 +168,10 @@ public class AddressServiceImplUserTest extends AddressUserTestSupport {
     @Test
     public void testDeleteAddress_whenAddressDoesNotExist_shouldThrowAddressNotFoundException() {
         User user = generateUser(true);
-        Address address = generateAddress(AddressType.BUYING, user);
+        Address address = generateAddress(AddressType.HOME, user);
 
         when(addressRepository.findById(addressId)).thenReturn(Optional.empty());
 
         assertThrows(AddressNotFoundException.class, () -> addressService.deleteAddress(addressId));
-    }
-
-
-    public void testGetAllAddressesByUserIdAndAddressType(AddressType addressType) {
-        List<Address> addressListForAddressType = generateAddressList(addressType, 5);
-        List<AddressDto> addressForAddressTypeDtoList = generateAddressDtoList(addressListForAddressType);
-        User user = generateUser(true);
-
-        when(userRepository.findById(userId)).thenReturn(Optional.of(user));
-        when(addressRepository.findAllByUserAndAddressType(user, addressType)).thenReturn(Optional.of(addressListForAddressType));
-        when(addressMapper.convert(addressListForAddressType)).thenReturn(addressForAddressTypeDtoList);
-
-        List<AddressDto> result = addressService.getAllAddressesByUserIdAndAddressType(user.getUserId(), addressType);
-
-        assertEquals(addressForAddressTypeDtoList, result);
-        verify(addressRepository).findAllByUserAndAddressType(user, addressType);
-        verify(userRepository).findById(userId);
-        verify(addressMapper).convert(addressListForAddressType);
     }
 }

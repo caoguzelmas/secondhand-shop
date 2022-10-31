@@ -20,7 +20,7 @@ public class AddressUserTestSupport extends UserTestSupport {
         List<Address> addressList = new ArrayList<>();
         addressList.addAll(IntStream.range(0, 2).mapToObj(i -> Address.builder()
                 .addressId((long) i)
-                .addressType(AddressType.BUYING)
+                .addressType(AddressType.HOME)
                 .address("address" + i)
                 .city("city" + i)
                 .region("region" + i)
@@ -31,7 +31,7 @@ public class AddressUserTestSupport extends UserTestSupport {
 
         addressList.addAll(IntStream.range(3, 5).mapToObj(i -> Address.builder()
                 .addressId((long) i)
-                .addressType(AddressType.SELLING)
+                .addressType(AddressType.BUSINESS)
                 .address("address" + i)
                 .city("city" + i)
                 .region("region" + i)
