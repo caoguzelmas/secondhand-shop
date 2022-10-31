@@ -16,6 +16,5 @@ public class UserDto {
     private String firstName;
     private String middleName;
     private String lastName;
-    private List<AddressDto> sellingAddresses;
-    private List<AddressDto> buyingAddresses;
+    private List<AddressDto> addressDtos;
 }

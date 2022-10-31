@@ -22,8 +22,7 @@ public class UserMapper {
                 .firstName(from.getFirstName())
                 .middleName(from.getMiddleName())
                 .lastName(from.getLastName())
-                .sellingAddresses(from.getSellingAddress() == null ? null : addressMapper.convert(from.getSellingAddress()))
-                .buyingAddresses(from.getBuyingAddress() == null ? null : addressMapper.convert(from.getBuyingAddress()))
+                .addressDtos(from.getAddresses() == null ? null : addressMapper.convert(from.getAddresses()))
                 .build();
     }
 

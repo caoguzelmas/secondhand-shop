@@ -24,9 +24,7 @@ public class User extends BaseEntity {
     private String middleName;
     private String lastName;
     @OneToMany(mappedBy = "user", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
-    private List<Address> sellingAddress;
-    @OneToMany(mappedBy = "user", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
-    private List<Address> buyingAddress;
+    private List<Address> addresses;
     private Boolean isActive;
 
     @Override
@@ -34,11 +32,11 @@ public class User extends BaseEntity {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         User user = (User) o;
-        return Objects.equals(userId, user.userId) && Objects.equals(email, user.email) && Objects.equals(password, user.password) && Objects.equals(firstName, user.firstName) && Objects.equals(middleName, user.middleName) && Objects.equals(lastName, user.lastName) && Objects.equals(sellingAddress, user.sellingAddress) && Objects.equals(buyingAddress, user.buyingAddress) && Objects.equals(isActive, user.isActive);
+        return Objects.equals(userId, user.userId) && Objects.equals(email, user.email) && Objects.equals(password, user.password) && Objects.equals(firstName, user.firstName) && Objects.equals(middleName, user.middleName) && Objects.equals(lastName, user.lastName) && Objects.equals(isActive, user.isActive);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(userId, email, password, firstName, middleName, lastName, sellingAddress, buyingAddress, isActive);
+        return Objects.hash(userId, email, password, firstName, middleName, lastName, isActive);
     }
 }

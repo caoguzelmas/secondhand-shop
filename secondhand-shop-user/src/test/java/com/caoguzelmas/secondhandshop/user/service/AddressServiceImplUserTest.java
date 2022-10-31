@@ -71,6 +71,38 @@ public class AddressServiceImplUserTest extends AddressUserTestSupport {
     }
 
     @Test
+    public void testGetAllAddressesByUserIdAndAddressType_shouldReturnAddressDtoListOfSellingAddresses() {
+        testGetAllAddressesByUserIdAndAddressType(AddressType.HOME);
+    }
+
+    @Test
+    public void testGetAllAddressesByUserIdAndAddressType_shouldReturnAddressDtoListOfBuyingAddresses() {
+        testGetAllAddressesByUserIdAndAddressType(AddressType.HOME);
+    }
+
+    @Test
+    public void testGetAllAddressesByUserIdAndAddressType_whenUserDoesNotExist_shouldThrowUserNotFoundException() {
+        User user = generateUser(true);
+        when(addressRepository.findAllByUserAndAddressType(user, AddressType.BUSINESS)).thenReturn(Optional.empty());
+
+        assertThrows(UserNotFoundException.class, () -> addressService.getAllAddressesByUserIdAndAddressType(userId, AddressType.BUSINESS));
+        verify(userRepository).findById(userId);
+        verifyNoInteractions(addressRepository);
+        verifyNoInteractions(addressMapper);
+    }
+
+    @Test
+    public void testGetAllAddressesByUserIdAndAddressType_whenAddressDoesNotExist_shouldThrowAddressNotFoundException()  {
+        User user = generateUser(true);
+        when(userRepository.findById(userId)).thenReturn(Optional.of(user));
+
+        assertThrows(AddressNotFoundException.class, () -> addressService.getAllAddressesByUserIdAndAddressType(userId, AddressType.BUSINESS));
+        verify(userRepository).findById(userId);
+        verify(addressRepository).findAllByUserAndAddressType(user, AddressType.BUSINESS);
+        verifyNoInteractions(addressMapper);
+    }
+
+    @Test
     public void testInsertAddress_shouldReturnAddressDto() {
         User user = generateUser(true);
         InsertAddressRequest insertAddressRequest = generateInsertAddressRequestWithAddressType(AddressType.HOME);
@@ -173,5 +205,23 @@ public class AddressServiceImplUserTest extends AddressUserTestSupport {
         when(addressRepository.findById(addressId)).thenReturn(Optional.empty());
 
         assertThrows(AddressNotFoundException.class, () -> addressService.deleteAddress(addressId));
+    }
+
+
+    public void testGetAllAddressesByUserIdAndAddressType(AddressType addressType) {
+        List<Address> addressListForAddressType = generateAddressList(addressType, 5);
+        List<AddressDto> addressForAddressTypeDtoList = generateAddressDtoList(addressListForAddressType);
+        User user = generateUser(true);
+
+        when(userRepository.findById(userId)).thenReturn(Optional.of(user));
+        when(addressRepository.findAllByUserAndAddressType(user, addressType)).thenReturn(Optional.of(addressListForAddressType));
+        when(addressMapper.convert(addressListForAddressType)).thenReturn(addressForAddressTypeDtoList);
+
+        List<AddressDto> result = addressService.getAllAddressesByUserIdAndAddressType(user.getUserId(), addressType);
+
+        assertEquals(addressForAddressTypeDtoList, result);
+        verify(addressRepository).findAllByUserAndAddressType(user, addressType);
+        verify(userRepository).findById(userId);
+        verify(addressMapper).convert(addressListForAddressType);
     }
 }

@@ -13,5 +13,6 @@ public interface IAddressService {
     AddressDto insertAddress(Long userId, final InsertAddressRequest request);
     void deleteAddress(Long addressId);
     List<AddressDto> getAllAddressesByUserId(Long id);
+    List<AddressDto> getAllAddressesByUserIdAndAddressType(Long id, final AddressType addressType);
     AddressDto updateAddress(Long addressId, final UpdateAddressRequest request);
 }

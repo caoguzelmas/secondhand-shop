@@ -57,6 +57,16 @@ public class AddressServiceImpl implements IAddressService {
     }
 
     @Override
+    public List<AddressDto> getAllAddressesByUserIdAndAddressType(final Long id, final AddressType addressType) {
+        User user = userService.findUserById(id);
+
+        List<Address> addressList = addressRepository.findAllByUserAndAddressType(user, addressType)
+                .orElseThrow(() -> new AddressNotFoundException("No Address found with given userId and type: "
+                        + id + ", " + addressType.name()));
+        return addressMapper.convert(addressList);
+    }
+
+    @Override
     public AddressDto updateAddress(final Long addressId, final UpdateAddressRequest request) {
         Address address = findByAddressId(addressId);
         User user = userService.findUserById(address.getUser().getUserId());
