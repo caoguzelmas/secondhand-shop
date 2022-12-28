@@ -11,11 +11,11 @@
 
     <artifactId>secondhand-shop-product</artifactId>
     <dependencies>
-        <dependency>
+<!--        <dependency>
             <groupId>com.caoguzelmas.secondhand-shop</groupId>
             <artifactId>secondhand-shop-user</artifactId>
             <version>0.0.1-SNAPSHOT</version>
-        </dependency>
+        </dependency>-->
     </dependencies>
 
     <properties>

@@ -11,6 +11,7 @@ import com.caoguzelmas.secondhandshop.user.repository.UserRepository;
 import com.caoguzelmas.secondhandshop.user.service.IUserService;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDateTime;
 import java.util.List;
 
 @Service
@@ -44,6 +45,7 @@ public class UserServiceImpl implements IUserService {
                 .lastName(userRequest.getLastName())
                 .isActive(false)
                 .build();
+        user.setCreatedDate(LocalDateTime.now());
         return userMapper.convert(userRepository.save(user));
     }
 
@@ -62,6 +64,7 @@ public class UserServiceImpl implements IUserService {
                 .lastName(updateUserRequest.getLastName())
                 .isActive(user.getIsActive())
                 .build();
+        user.setUpdatedDate(LocalDateTime.now());
         return userMapper.convert(userRepository.save(updatedUser));
     }
 

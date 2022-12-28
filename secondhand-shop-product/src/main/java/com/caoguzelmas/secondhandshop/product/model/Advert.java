@@ -1,10 +1,12 @@
 package com.caoguzelmas.secondhandshop.product.model;
 
-import com.caoguzelmas.secondhandshop.user.model.BaseEntity;
-import com.caoguzelmas.secondhandshop.user.model.User;
 import lombok.*;
 
 import javax.persistence.*;
+import java.math.BigDecimal;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
 
 @Entity
 @Getter
@@ -17,15 +19,11 @@ public class Advert extends BaseEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long advertId;
-    private String header;
+    private String title;
     private String description;
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "userId", nullable = false)
-    private User user;
-    @OneToOne(mappedBy = "advert")
-    private Product product;
-
-
-
-
+    private BigDecimal price;
+    @Transient
+    private Set<String> hashtags = new HashSet<>();
+    private Long userId;
+    private Long addressId;
 }
